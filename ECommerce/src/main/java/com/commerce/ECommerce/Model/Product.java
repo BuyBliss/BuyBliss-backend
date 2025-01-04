@@ -1,24 +1,25 @@
 package com.commerce.ECommerce.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 public class Product {
     @Id
-    private Integer productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
     private String productName;
     private String description;
     private String category;
     private String subCategory;
     private double price;
     private int stock;
-    private Integer vendorId;
+    @ManyToOne
+    @JoinColumn(name = "vendor_id", nullable = false)
+    private Vendor vendor;
 }
