@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class
-ProductService {
+public class ProductService {
 
     @Autowired
     ProductRepo productRepo;
@@ -34,5 +33,10 @@ ProductService {
 
     public List<Product> getProductsByVendor(Long vendorId) {
         return productRepo.findByVendorId(vendorId);
+    }
+
+    public void addProduct(Product product) {
+        System.out.println(product);
+        productRepo.save(product);
     }
 }

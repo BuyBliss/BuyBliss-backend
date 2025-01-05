@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,20 +29,20 @@ public class ProductController {
         try {
             Optional<Product> product = productService.getProductById(id);
             return ResponseEntity.ok(product);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-        @GetMapping("/vendor/{vendorId}")
-        public ResponseEntity<List<Product>> getProductsByVendor(@PathVariable Long vendorId) {
-            try {
-                List<Product> products = productService.getProductsByVendor(vendorId);
-                return ResponseEntity.ok(products);
-            } catch (RuntimeException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+    @GetMapping("/vendor/{vendorId}")
+    public ResponseEntity<List<Product>> getProductsByVendor(@PathVariable Long vendorId) {
+        try {
+            List<Product> products = productService.getProductsByVendor(vendorId);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
@@ -51,7 +52,11 @@ public class ProductController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
 
-
+    @PostMapping
+    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+        productService.addProduct(product);
+        return ResponseEntity.ok("Product Added Successfully !");
     }
 }
