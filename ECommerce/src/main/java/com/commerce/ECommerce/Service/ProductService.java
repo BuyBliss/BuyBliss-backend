@@ -39,4 +39,8 @@ public class ProductService {
         System.out.println(product);
         productRepo.save(product);
     }
+
+    public List<Product> getAllProducts() {
+        return productRepo.findAll();
+    }
 }

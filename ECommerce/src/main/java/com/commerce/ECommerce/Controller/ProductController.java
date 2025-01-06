@@ -24,6 +24,16 @@ public class ProductController {
         return ResponseEntity.ok("Product Updated Successfully !");
     }
 
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        try {
+            List<Product> products = productService.getAllProducts();
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
