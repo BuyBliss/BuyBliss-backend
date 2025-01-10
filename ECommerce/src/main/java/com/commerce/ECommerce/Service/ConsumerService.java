@@ -1,13 +1,16 @@
 package com.commerce.ECommerce.Service;
 
-import com.commerce.ECommerce.Model.Consumer;
-import com.commerce.ECommerce.Model.Order;
-import com.commerce.ECommerce.Model.Product;
-import com.commerce.ECommerce.Repositoy.*;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.commerce.ECommerce.Model.Cart;
+import com.commerce.ECommerce.Model.Consumer;
+import com.commerce.ECommerce.Repositoy.CartRepository;
+import com.commerce.ECommerce.Repositoy.ConsumerRepo;
+import com.commerce.ECommerce.Repositoy.ProductRepo;
 
 @Service
 public class ConsumerService {
@@ -16,16 +19,16 @@ public class ConsumerService {
     ConsumerRepo consumerRepo;
 
     @Autowired
-    MyCartRepo myCartRepo;
+    CartRepository cartRepository;
 
     @Autowired
     ProductRepo productRepo;
 
-    @Autowired
-    MyOrdersRepo myOrdersRepo;
+//    @Autowired
+//    MyOrdersRepo myOrdersRepo;
 
-    @Autowired
-    OrderRepo orderRepo;
+//    @Autowired
+//    OrderRepo orderRepo;
 
     public void register(Consumer consumer) {
         consumerRepo.save(consumer);
@@ -43,13 +46,13 @@ public class ConsumerService {
         return consumerRepo.getReferenceById(id);
     }
 
-    public List<Product> getMyCart(Long id) {
-        List<Long> productIdList = myCartRepo.findById(id).get().getListOfProductId();
-        return productRepo.findAllById(productIdList);
+    public Cart getMyCart(Long id) {
+    	Optional<Consumer> consumer = consumerRepo.findById(id);
+         return consumer.get().getCart();
     }
-
-    public List<Order> getMyOrders(Long orderId) {
-        List<Long> orderIdList = myOrdersRepo.findById(orderId).get().getListOfOrdersId();
-        return orderRepo.findAllById(orderIdList);
-    }
+//
+//    public List<Order> getMyOrders(Long orderId) {
+//        List<Long> orderIdList = myOrdersRepo.findById(orderId).get().getListOfOrdersId();
+//        return orderRepo.findAllById(orderIdList);
+//    }
 }

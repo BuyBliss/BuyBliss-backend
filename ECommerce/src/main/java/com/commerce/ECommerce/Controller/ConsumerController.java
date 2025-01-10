@@ -1,15 +1,19 @@
 package com.commerce.ECommerce.Controller;
 
-import com.commerce.ECommerce.Model.Consumer;
-import com.commerce.ECommerce.Model.Order;
-import com.commerce.ECommerce.Model.Product;
-import com.commerce.ECommerce.Service.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.commerce.ECommerce.Model.Cart;
+import com.commerce.ECommerce.Model.Consumer;
+import com.commerce.ECommerce.Service.ConsumerService;
 
 
 @RestController
@@ -42,12 +46,12 @@ public class ConsumerController {
     }
 
     @GetMapping("/myCart/{id}")
-    public ResponseEntity<List<Product>> getMyCart(@PathVariable Long cartId){
-        return ResponseEntity.ok(consumerService.getMyCart(cartId));
+    public ResponseEntity<Cart> getMyCart(@PathVariable Long id){
+        return ResponseEntity.ok(consumerService.getMyCart(id));
     }
 
-    @GetMapping("/myOrders/{id}")
-    public ResponseEntity<List<Order>> getMyOrders(@PathVariable Long orderId){
-        return ResponseEntity.ok(consumerService.getMyOrders(orderId));
-    }
+//    @GetMapping("/myOrders/{id}")
+//    public ResponseEntity<List<Order>> getMyOrders(@PathVariable Long orderId){
+//        return ResponseEntity.ok(consumerService.getMyOrders(orderId));
+//    }
 }
