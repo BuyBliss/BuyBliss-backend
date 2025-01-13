@@ -23,19 +23,19 @@ public class ConsumerController {
     @Autowired
     ConsumerService consumerService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<String> register(@RequestBody Consumer consumer) {
         consumerService.register(consumer);
         return ResponseEntity.ok("Welcome " + consumer.getName() + ", You have registered Successfully !");
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<String> updateProfile(@RequestBody Consumer consumer) {
         consumerService.updateProfile(consumer);
         return ResponseEntity.ok("Profile Updated !");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public void deleteProfile(@PathVariable Long id){
         consumerService.deleteConsumer(id);
     }

@@ -20,7 +20,6 @@ public class Consumer {
     private String name;
     private String email;
     private String contactNo;
-    private long myOrdersId;
   
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
