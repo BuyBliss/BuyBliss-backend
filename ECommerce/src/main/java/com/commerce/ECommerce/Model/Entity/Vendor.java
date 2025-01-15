@@ -1,4 +1,4 @@
-package com.commerce.ECommerce.Model;
+package com.commerce.ECommerce.Model.Entity;
 
 import java.util.List;
 
@@ -7,9 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -22,16 +20,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Cart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @ManyToOne
-    private Product product;
+public class Vendor {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long vendorId;
+	private String name;
+	private String email;
+	private String contactNo;
+	@OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+	private List<Product> products;
 
-    private int quantity;
-
-    @OneToOne(mappedBy = "cart")
-    private Consumer customer;
 }

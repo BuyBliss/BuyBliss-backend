@@ -1,13 +1,14 @@
 package com.commerce.ECommerce.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+import com.commerce.ECommerce.Model.Entity.Order;
+import com.commerce.ECommerce.Repositoy.OrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.commerce.ECommerce.Model.Cart;
-import com.commerce.ECommerce.Model.Consumer;
+import com.commerce.ECommerce.Model.Entity.Cart;
+import com.commerce.ECommerce.Model.Entity.Consumer;
 import com.commerce.ECommerce.Repositoy.CartRepository;
 import com.commerce.ECommerce.Repositoy.ConsumerRepo;
 import com.commerce.ECommerce.Repositoy.ProductRepo;
@@ -18,17 +19,6 @@ public class ConsumerService {
     @Autowired
     ConsumerRepo consumerRepo;
 
-    @Autowired
-    CartRepository cartRepository;
-
-    @Autowired
-    ProductRepo productRepo;
-
-//    @Autowired
-//    MyOrdersRepo myOrdersRepo;
-
-//    @Autowired
-//    OrderRepo orderRepo;
 
     public void register(Consumer consumer) {
         consumerRepo.save(consumer);
@@ -47,12 +37,10 @@ public class ConsumerService {
     }
 
     public Cart getMyCart(Long id) {
-    	Optional<Consumer> consumer = consumerRepo.findById(id);
-         return consumer.get().getCart();
+        return consumerRepo.getReferenceById(id).getCart();
     }
-//
-//    public List<Order> getMyOrders(Long orderId) {
-//        List<Long> orderIdList = myOrdersRepo.findById(orderId).get().getListOfOrdersId();
-//        return orderRepo.findAllById(orderIdList);
-//    }
+
+    public List<Order> getMyOrders(Long consumerId) {
+        return consumerRepo.getReferenceById(consumerId).getOrders();
+    }
 }

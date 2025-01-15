@@ -1,6 +1,4 @@
-package com.commerce.ECommerce.Model;
-
-import java.util.List;
+package com.commerce.ECommerce.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -7,16 +7,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.commerce.ECommerce.Model.Product;
+import com.commerce.ECommerce.Model.Entity.Product;
 import com.commerce.ECommerce.Service.ProductService;
 
 @RestController
@@ -27,7 +20,7 @@ public class ProductController {
     ProductService productService;
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateProduct(Product product) {
+    public ResponseEntity<String> updateProduct(@RequestBody Product product) {
         productService.updateProduct(product);
         return ResponseEntity.ok("Product Updated Successfully !");
     }
@@ -62,7 +55,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("deleteProduct/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         try {
             productService.deleteProduct(id);
@@ -72,9 +65,9 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/addProduct")
-    public ResponseEntity<String> addProduct(@RequestBody Product product) {
-        productService.addProduct(product);
+    @PostMapping("/add")
+    public ResponseEntity<String> addProduct(@RequestParam Long vendorId, @RequestBody Product product) {
+        productService.addProduct(vendorId, product);
         return ResponseEntity.ok("Product Added Successfully !");
     }
 }

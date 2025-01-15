@@ -1,5 +1,6 @@
 package com.commerce.ECommerce.Controller;
 
+import com.commerce.ECommerce.Model.Entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.commerce.ECommerce.Model.Cart;
-import com.commerce.ECommerce.Model.Consumer;
+import com.commerce.ECommerce.Model.Entity.Cart;
+import com.commerce.ECommerce.Model.Entity.Consumer;
 import com.commerce.ECommerce.Service.ConsumerService;
+
+import java.util.List;
 
 
 @RestController
@@ -50,8 +53,8 @@ public class ConsumerController {
         return ResponseEntity.ok(consumerService.getMyCart(id));
     }
 
-//    @GetMapping("/myOrders/{id}")
-//    public ResponseEntity<List<Order>> getMyOrders(@PathVariable Long orderId){
-//        return ResponseEntity.ok(consumerService.getMyOrders(orderId));
-//    }
+    @GetMapping("/myOrders/{id}")
+    public ResponseEntity<List<Order>> getMyOrders(@PathVariable Long consumerId){
+        return ResponseEntity.ok(consumerService.getMyOrders(consumerId));
+    }
 }

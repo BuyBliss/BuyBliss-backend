@@ -1,4 +1,4 @@
-package com.commerce.ECommerce.Model;
+package com.commerce.ECommerce.Model.Enum;
 
 public enum PaymentType {
     UPI,

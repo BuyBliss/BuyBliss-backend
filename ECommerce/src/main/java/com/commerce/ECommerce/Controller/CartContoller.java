@@ -1,24 +1,16 @@
 package com.commerce.ECommerce.Controller;
 
-import java.util.Optional;
-
+import com.commerce.ECommerce.Model.Request.UpdateCartUIRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.commerce.ECommerce.Model.Cart;
-import com.commerce.ECommerce.Model.Consumer;
-import com.commerce.ECommerce.Model.Product;
 import com.commerce.ECommerce.Repositoy.ConsumerRepo;
 import com.commerce.ECommerce.Repositoy.ProductRepo;
 import com.commerce.ECommerce.Service.CartService;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/cart")
 public class CartContoller {
 	
 	 @Autowired
@@ -31,33 +23,21 @@ public class CartContoller {
 	 CartService  cartService;
 	
 		@PostMapping("/add")
-		public ResponseEntity<String> addToCart(@RequestParam Long customerId, @RequestParam Long productId,
-				@RequestParam int quantity) {
-			Optional<Consumer> customerOptional = customerRepository.findById(customerId);
-			Optional<Product> productOptional = productRepository.findById(productId);
-			if (customerOptional.isPresent() && productOptional.isPresent()) {
-				cartService.addTocart(customerOptional.get(), productOptional.get(), quantity);
-				return ResponseEntity.ok("Product added to cart successfully.");
-			} else {
-				return ResponseEntity.badRequest().body("Invalid customer ID or product ID.");
-			}
+		public ResponseEntity<String> addToCart(UpdateCartUIRequest addRequest) {
+			cartService.addToCart(addRequest);
+			return ResponseEntity.ok("Product added to cart successfully.");
+		}
+
+		@PostMapping("/remove")
+		public ResponseEntity<String> removeProduct(@RequestBody UpdateCartUIRequest removeRequest) {
+			cartService.removeFromCart(removeRequest);
+			return ResponseEntity.ok("Removed 1 product successfully.");
 		}
 
 	    @DeleteMapping("/emptyCart")
-	    public ResponseEntity<String> removeFromCart(@RequestParam Long customerId) {
-	    	Optional<Consumer> customerOptional = customerRepository.findById(customerId);
-	        if (customerOptional.isPresent()) {
-	            Consumer customer = customerOptional.get();
-	            Cart cart = customer.getCart();
-	            if (cart != null) {
-	            	cartService.deleteCart(cart);
-	                return ResponseEntity.ok("Product removed from cart successfully.");
-	            } else {
-	                return ResponseEntity.badRequest().body("Cart is empty.");
-	            }
-	        } else {
-	            return ResponseEntity.badRequest().body("Invalid customer ID.");
-	        }
+	    public ResponseEntity<String> emptyCart(@RequestParam Long cartId) {
+	    	cartService.clearCart(cartId);
+			return ResponseEntity.ok("Cart is empty now.");
 	    }
 	}
 
