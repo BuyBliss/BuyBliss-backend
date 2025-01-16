@@ -48,8 +48,7 @@ public class ProductController {
     @GetMapping("/vendor/{vendorId}")
     public ResponseEntity<List<Product>> getProductsByVendor(@PathVariable Long vendorId) {
         try {
-            List<Product> products = productService.getProductsByVendor(vendorId);
-            return ResponseEntity.ok(products);
+            return ResponseEntity.ok(productService.getProductsByVendor(vendorId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

@@ -18,30 +18,30 @@ import com.commerce.ECommerce.Service.VendorService;
 @RequestMapping("/vendor")
 public class VendorController {
 
-	@Autowired
-	VendorService vendorService;
-	
-	 @PostMapping("/add")
-	    public ResponseEntity<Vendor> createVendor(@RequestBody Vendor vendor) {
-	        Vendor createdVendor = vendorService.createVendor(vendor);
-	        return new ResponseEntity<>(createdVendor, HttpStatus.CREATED);
-	    }
+    @Autowired
+    VendorService vendorService;
 
-	    @PutMapping("/update/{id}")
-	    public ResponseEntity<Vendor> updateVendor(
-	            @PathVariable Long id, 
-	            @RequestBody Vendor updatedVendor) {
-	        Vendor vendor = vendorService.updateVendor(id, updatedVendor);
-	        return new ResponseEntity<>(vendor, HttpStatus.OK);
-	    }
+    @PostMapping("/add")
+    public ResponseEntity<Vendor> createVendor(@RequestBody Vendor vendor) {
+        Vendor createdVendor = vendorService.createVendor(vendor);
+        return new ResponseEntity<>(createdVendor, HttpStatus.CREATED);
+    }
 
-	@DeleteMapping("deleteVendor/{id}")
-	public ResponseEntity<?> deleteVendor(@PathVariable Long id) {
-		try {
-			vendorService.deleteVendor(id);
-			return ResponseEntity.ok("Vendor deleted ");
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-	}
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Vendor> updateVendor(
+            @PathVariable Long id,
+            @RequestBody Vendor updatedVendor) {
+        Vendor vendor = vendorService.updateVendor(id, updatedVendor);
+        return new ResponseEntity<>(vendor, HttpStatus.OK);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteVendor(@PathVariable Long id) {
+        try {
+            vendorService.deleteVendor(id);
+            return ResponseEntity.ok("Vendor deleted ");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

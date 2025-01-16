@@ -23,7 +23,7 @@ public class CartContoller {
 	 CartService  cartService;
 	
 		@PostMapping("/add")
-		public ResponseEntity<String> addToCart(UpdateCartUIRequest addRequest) {
+		public ResponseEntity<String> addToCart(@RequestBody UpdateCartUIRequest addRequest) {
 			cartService.addToCart(addRequest);
 			return ResponseEntity.ok("Product added to cart successfully.");
 		}

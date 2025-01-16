@@ -10,4 +10,12 @@ import lombok.NoArgsConstructor;
 public class UpdateCartUIRequest {
     long cartId;
     long productId;
+
+    public long getCartId() {
+        return cartId;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
 }

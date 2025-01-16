@@ -28,4 +28,35 @@ public class Cart {
     @OneToOne(mappedBy = "cart")
     private Consumer consumer;
 
+    public Long getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
+    }
+
+    public List<CartItem> getCartItemList() {
+        return cartItemList;
+    }
+
+    public void setCartItemList(List<CartItem> cartItemList) {
+        this.cartItemList = cartItemList;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public Consumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(Consumer consumer) {
+        this.consumer = consumer;
+    }
 }

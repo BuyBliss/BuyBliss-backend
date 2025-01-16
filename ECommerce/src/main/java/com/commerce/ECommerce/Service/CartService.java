@@ -22,9 +22,6 @@ public class CartService {
     CartItemRepo cartItemRepo;
 
     @Autowired
-    ConsumerRepo consumerRepo;
-
-    @Autowired
     ProductRepo productRepo;
 	
 	public void addToCart(UpdateCartUIRequest addRequest)
@@ -52,9 +49,7 @@ public class CartService {
 	public void clearCart(Long cartId)
 	{
         Cart cart = cartRepository.getReferenceById(cartId);
-		cart.getCartItemList().clear();
-        cart.setSize(0);
-        cartRepository.save(cart);
+		emptyCart(cart);
 	}
 
     public void removeFromCart(UpdateCartUIRequest removeRequest) {
@@ -82,5 +77,11 @@ public class CartService {
             cartItemRepo.save(cartItem);
         else
             cartItemRepo.deleteById(cartItem.getCartItemId());
+    }
+
+    public void emptyCart(Cart cart) {
+        cart.getCartItemList().clear();
+        cart.setSize(0);
+        cartRepository.save(cart);
     }
 }

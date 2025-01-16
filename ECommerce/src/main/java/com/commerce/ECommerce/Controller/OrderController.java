@@ -1,5 +1,6 @@
 package com.commerce.ECommerce.Controller;
 
+import com.commerce.ECommerce.Model.Request.BuyNowUIRequest;
 import com.commerce.ECommerce.Model.Request.PlaceOrderUIRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,5 +18,10 @@ public class OrderController {
     @PostMapping("/place")
     public Order placeOrder(@RequestBody PlaceOrderUIRequest placeOrderUIRequest) {
         return orderService.placeOrder(placeOrderUIRequest);
+    }
+
+    @PostMapping("/buyNow")
+    public Order buyNow(@RequestBody BuyNowUIRequest buyNowUIRequest) {
+        return orderService.buyNow(buyNowUIRequest);
     }
 }
