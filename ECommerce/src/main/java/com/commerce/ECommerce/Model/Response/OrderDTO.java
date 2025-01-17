@@ -1,27 +1,18 @@
-package com.commerce.ECommerce.Model.Entity;
+package com.commerce.ECommerce.Model.Response;
 
 import com.commerce.ECommerce.Model.Enum.OrderStatus;
 import com.commerce.ECommerce.Model.Enum.PaymentType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Table(name = "orders")
-public class Order {
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class OrderDTO {
     private Long orderId;
     private OrderStatus status;
     private PaymentType paymentType;
@@ -30,14 +21,7 @@ public class Order {
     private double totalPrice;
     @Temporal(value = TemporalType.DATE)
     private LocalDate billDate;
-
-    @ManyToOne
-    @JoinColumn(name = "consumer_id")
-    @JsonBackReference
-    private Consumer consumer;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItemList;
+    private List<OrderItemDTO> orderItemList;
 
     public Long getOrderId() {
         return orderId;
@@ -95,19 +79,11 @@ public class Order {
         this.billDate = billDate;
     }
 
-    public Consumer getConsumer() {
-        return consumer;
-    }
-
-    public void setConsumer(Consumer consumer) {
-        this.consumer = consumer;
-    }
-
-    public List<OrderItem> getOrderItemList() {
+    public List<OrderItemDTO> getOrderItemList() {
         return orderItemList;
     }
 
-    public void setOrderItemList(List<OrderItem> orderItemList) {
+    public void setOrderItemList(List<OrderItemDTO> orderItemList) {
         this.orderItemList = orderItemList;
     }
 }

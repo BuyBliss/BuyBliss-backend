@@ -1,6 +1,8 @@
 package com.commerce.ECommerce.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,10 +27,11 @@ public class Consumer {
     private String contactNo;
 
     @OneToOne(cascade = CascadeType.ALL)
-    //@JsonIgnore
+    @JsonManagedReference
     private Cart cart = new Cart();
 
-    @OneToMany (mappedBy = "consumer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Order> orders;
 
     public Long getConsumerId() {

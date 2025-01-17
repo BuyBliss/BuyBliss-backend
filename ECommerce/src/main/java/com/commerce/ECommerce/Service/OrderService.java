@@ -1,6 +1,7 @@
 package com.commerce.ECommerce.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import com.commerce.ECommerce.Model.Entity.*;
 import com.commerce.ECommerce.Model.Enum.OrderStatus;
 import com.commerce.ECommerce.Model.Request.BuyNowUIRequest;
 import com.commerce.ECommerce.Model.Request.PlaceOrderUIRequest;
+import com.commerce.ECommerce.Model.Response.OrderDTO;
+import com.commerce.ECommerce.Model.Response.OrderItemDTO;
 import com.commerce.ECommerce.Repositoy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ public class OrderService {
 
     @Autowired
     private OrderRepo orderRepository;
-    
+
     @Autowired
     ProductRepo productRepo;
 
@@ -32,12 +35,12 @@ public class OrderService {
     ConsumerService consumerService;
 
     @Autowired
-    CartService  cartService;
+    CartService cartService;
 
     @Autowired
     CartRepository cartRepo;
 
-    public Order placeOrder(PlaceOrderUIRequest placeOrderUIRequest) {
+    public OrderDTO placeOrder(PlaceOrderUIRequest placeOrderUIRequest) {
         Order order = new Order();
         order.setConsumer(consumerService.getConsumerDetails(placeOrderUIRequest.getConsumerId()));
         order.setTotalPrice(placeOrderUIRequest.getTotalPrice());
@@ -68,10 +71,11 @@ public class OrderService {
         cartService.emptyCart(cart);
 
         savedOrder.setOrderItemList(orderItems);
-        return orderRepository.save(savedOrder);
+        orderRepository.save(savedOrder);
+        return mapOrderToOrderDTO(savedOrder);
     }
 
-    public Order buyNow(BuyNowUIRequest buyNowUIRequest) {
+    public OrderDTO buyNow(BuyNowUIRequest buyNowUIRequest) {
         Order order = new Order();
         order.setConsumer(consumerService.getConsumerDetails(buyNowUIRequest.getConsumerId()));
 
@@ -95,6 +99,37 @@ public class OrderService {
         orderItem.setOrder(savedOrder);
         orderItemRepo.save(orderItem);
 
-        return order;
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+
+        savedOrder.setOrderItemList(orderItems);
+        orderRepository.save(savedOrder);
+        return mapOrderToOrderDTO(savedOrder);
     }
+
+    private OrderDTO mapOrderToOrderDTO(Order savedOrder) {
+        OrderDTO orderDTO = new OrderDTO();
+
+        orderDTO.setOrderId(savedOrder.getOrderId());
+        orderDTO.setTotalPrice(savedOrder.getTotalPrice());
+        orderDTO.setQuantity(savedOrder.getQuantity());
+        orderDTO.setDeliveryAddress(savedOrder.getDeliveryAddress());
+        orderDTO.setPaymentType(savedOrder.getPaymentType());
+        orderDTO.setStatus(savedOrder.getStatus());
+        orderDTO.setBillDate(savedOrder.getBillDate());
+
+        List<OrderItemDTO> orderItemDTOs = savedOrder.getOrderItemList().stream()
+                .map(orderItem -> {
+                    OrderItemDTO orderItemDTO = new OrderItemDTO();
+                    orderItemDTO.setProductName(orderItem.getProduct().getProductName());
+                    orderItemDTO.setProductQuantity(orderItem.getProductQuantity());
+                    return orderItemDTO;
+                })
+                .collect(Collectors.toList());
+
+        orderDTO.setOrderItemList(orderItemDTOs);
+
+        return orderDTO;
+    }
+
 }
