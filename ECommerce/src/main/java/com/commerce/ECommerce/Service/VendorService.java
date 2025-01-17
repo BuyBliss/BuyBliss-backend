@@ -1,12 +1,11 @@
 package com.commerce.ECommerce.Service;
 
-import java.util.Optional;
-
+import com.commerce.ECommerce.Model.Entity.Vendor;
+import com.commerce.ECommerce.Repositoy.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.commerce.ECommerce.Model.Entity.Vendor;
-import com.commerce.ECommerce.Repositoy.VendorRepository;
+import java.util.Optional;
 
 @Service
 public class VendorService {

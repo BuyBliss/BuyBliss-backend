@@ -1,12 +1,9 @@
 package com.commerce.ECommerce.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.commerce.ECommerce.Model.Entity.*;
+import com.commerce.ECommerce.Model.Entity.Cart;
+import com.commerce.ECommerce.Model.Entity.Order;
+import com.commerce.ECommerce.Model.Entity.OrderItem;
+import com.commerce.ECommerce.Model.Entity.Product;
 import com.commerce.ECommerce.Model.Enum.OrderStatus;
 import com.commerce.ECommerce.Model.Request.BuyNowUIRequest;
 import com.commerce.ECommerce.Model.Request.PlaceOrderUIRequest;
@@ -15,6 +12,11 @@ import com.commerce.ECommerce.Model.Response.OrderItemDTO;
 import com.commerce.ECommerce.Repositoy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {

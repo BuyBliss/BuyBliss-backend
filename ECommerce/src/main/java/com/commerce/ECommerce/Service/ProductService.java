@@ -3,9 +3,9 @@ package com.commerce.ECommerce.Service;
 import com.commerce.ECommerce.Model.Entity.Product;
 import com.commerce.ECommerce.Model.Entity.Vendor;
 import com.commerce.ECommerce.Repositoy.ProductRepo;
+import com.commerce.ECommerce.Repositoy.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.commerce.ECommerce.Repositoy.VendorRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -4,14 +4,14 @@ import com.commerce.ECommerce.Model.Enum.OrderStatus;
 import com.commerce.ECommerce.Model.Enum.PaymentType;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDTO {
     private Long orderId;
     private OrderStatus status;
@@ -23,7 +23,7 @@ public class OrderDTO {
     private LocalDate billDate;
     private List<OrderItemDTO> orderItemList;
 
-    public Long getOrderId() {
+    /*public Long getOrderId() {
         return orderId;
     }
 
@@ -85,5 +85,5 @@ public class OrderDTO {
 
     public void setOrderItemList(List<OrderItemDTO> orderItemList) {
         this.orderItemList = orderItemList;
-    }
+    }*/
 }

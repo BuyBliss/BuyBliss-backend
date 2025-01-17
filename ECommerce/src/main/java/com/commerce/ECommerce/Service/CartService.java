@@ -1,16 +1,13 @@
 package com.commerce.ECommerce.Service;
 
+import com.commerce.ECommerce.Model.Entity.Cart;
 import com.commerce.ECommerce.Model.Entity.CartItem;
 import com.commerce.ECommerce.Model.Request.UpdateCartUIRequest;
 import com.commerce.ECommerce.Repositoy.CartItemRepo;
-import jakarta.transaction.Transactional;
+import com.commerce.ECommerce.Repositoy.CartRepository;
+import com.commerce.ECommerce.Repositoy.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.commerce.ECommerce.Model.Entity.Cart;
-import com.commerce.ECommerce.Repositoy.CartRepository;
-import com.commerce.ECommerce.Repositoy.ConsumerRepo;
-import com.commerce.ECommerce.Repositoy.ProductRepo;
 
 @Service
 public class CartService {

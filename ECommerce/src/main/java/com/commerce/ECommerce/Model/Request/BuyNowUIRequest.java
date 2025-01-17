@@ -13,20 +13,4 @@ public class BuyNowUIRequest {
     private Long consumerId;
     private String deliveryAddress;
     private PaymentType paymentType;
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public Long getConsumerId() {
-        return consumerId;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public PaymentType getPaymentType() {
-        return paymentType;
-    }
 }

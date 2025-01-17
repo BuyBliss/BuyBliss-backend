@@ -1,17 +1,13 @@
 package com.commerce.ECommerce.Service;
 
-import java.util.List;
-
+import com.commerce.ECommerce.Model.Entity.Cart;
+import com.commerce.ECommerce.Model.Entity.Consumer;
 import com.commerce.ECommerce.Model.Entity.Order;
-import com.commerce.ECommerce.Repositoy.OrderRepo;
+import com.commerce.ECommerce.Repositoy.ConsumerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.commerce.ECommerce.Model.Entity.Cart;
-import com.commerce.ECommerce.Model.Entity.Consumer;
-import com.commerce.ECommerce.Repositoy.CartRepository;
-import com.commerce.ECommerce.Repositoy.ConsumerRepo;
-import com.commerce.ECommerce.Repositoy.ProductRepo;
+import java.util.List;
 
 @Service
 public class ConsumerService {
