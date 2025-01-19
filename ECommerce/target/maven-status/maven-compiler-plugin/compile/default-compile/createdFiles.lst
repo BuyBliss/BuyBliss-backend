@@ -1,6 +1,0 @@
-com\commerce\ECommerce\ECommerceApplication.class
-com\commerce\ECommerce\Controller\ProductController.class
-com\commerce\ECommerce\Service\ProductService.class
-com\commerce\ECommerce\Model\Product.class
-com\commerce\ECommerce\Controller\DemoController.class
-com\commerce\ECommerce\Repositoy\ProductRepo.class
