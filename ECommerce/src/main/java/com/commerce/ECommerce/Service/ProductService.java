@@ -2,9 +2,14 @@ package com.commerce.ECommerce.Service;
 
 import com.commerce.ECommerce.Model.Entity.Product;
 import com.commerce.ECommerce.Model.Entity.Vendor;
+import com.commerce.ECommerce.Model.Response.ProductDTO;
+import com.commerce.ECommerce.Model.Response.ProductSearchResponse;
+import com.commerce.ECommerce.Model.Response.VendorDTO;
 import com.commerce.ECommerce.Repositoy.ProductRepo;
 import com.commerce.ECommerce.Repositoy.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,7 +55,31 @@ public class ProductService {
     }
 
 
-    public List<Product> getAllProducts() {
-        return productRepo.findAll();
+    public List<ProductDTO> getAllProducts(String category, int pageNumber, int pageSize) {
+        Page<Product> products;
+        if(category != null && !category.isBlank())
+            products = productRepo.findByCategory(category, PageRequest.of(pageNumber, pageSize));
+        else
+            products = productRepo.findAll(PageRequest.of(pageNumber, pageSize));
+
+        return products.map(p -> {
+            Vendor v = p.getVendor();
+            VendorDTO vendorDTO = new VendorDTO(v.getVendorId(), v.getName(), v.getEmail(), v.getContactNo());
+            return new ProductDTO(p.getProductId(), p.getProductName(), p.getDescription(), p.getCategory(), p.getSubCategory(), p.getPrice(), p.getStock(), vendorDTO);
+        }).toList();
+
+    }
+
+
+    public ProductSearchResponse searchByKeyword(String keyword, int pageNumber, int pageSize) {
+        Page<Product> products = productRepo.searchProducts(keyword, PageRequest.of(pageNumber, pageSize));
+        System.out.println(products);
+        List<ProductDTO> productDTOS = products.map(p -> {
+            Vendor v = p.getVendor();
+            VendorDTO vendorDTO = new VendorDTO(v.getVendorId(), v.getName(), v.getEmail(), v.getContactNo());
+            return new ProductDTO(p.getProductId(), p.getProductName(), p.getDescription(), p.getCategory(), p.getSubCategory(), p.getPrice(), p.getStock(), vendorDTO);
+        }).toList();
+        System.out.println(productDTOS);
+        return new ProductSearchResponse(products.getTotalPages(), productDTOS);
     }
 }

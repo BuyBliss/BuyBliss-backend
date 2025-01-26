@@ -1,16 +1,17 @@
 package com.commerce.ECommerce.Controller;
 
 
-import java.util.List;
-import java.util.Optional;
-
+import com.commerce.ECommerce.Model.Entity.Product;
+import com.commerce.ECommerce.Model.Response.ProductDTO;
+import com.commerce.ECommerce.Model.Response.ProductSearchResponse;
+import com.commerce.ECommerce.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.commerce.ECommerce.Model.Entity.Product;
-import com.commerce.ECommerce.Service.ProductService;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/product")
@@ -26,9 +27,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(required = false) String category,
+                                                           @RequestParam(defaultValue = "1", required = false) int pageNumber,
+                                                           @RequestParam(defaultValue = "10", required = false) int pageSize) {
         try {
-            List<Product> products = productService.getAllProducts();
+            List<ProductDTO> products = productService.getAllProducts(category,pageNumber - 1, pageSize);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -39,6 +42,18 @@ public class ProductController {
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
             Optional<Product> product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<?> searchProducts(@PathVariable String keyword,
+                                            @RequestParam(defaultValue = "1", required = false) int pageNumber,
+                                            @RequestParam(defaultValue = "10", required = false) int pageSize) {
+        try {
+            ProductSearchResponse product = productService.searchByKeyword(keyword, pageNumber - 1, pageSize);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
