@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ServiceLoggingAspect {
 
-    @Pointcut("execution(public * com.commerce.ECommerce.Service.*.*(..))")
+    @Pointcut("execution(public * com.commerce.ecommerce.service.*.*(..))")
     public void allServiceMethods() {}
 
     @Before("allServiceMethods()")
@@ -24,7 +24,7 @@ public class ServiceLoggingAspect {
         log.info("Method Exit : {}", joinPoint.getSignature().getName());
     }
 
-    @AfterReturning(pointcut = "execution(public * com.commerce.ECommerce.Service.OrderService.buyNow(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(public * com.commerce.ecommerce.service.OrderService.buyNow(..))", returning = "result")
     public void logAfterReturning(Object result) {
         try {
             log.info("Method returned : {}", result);

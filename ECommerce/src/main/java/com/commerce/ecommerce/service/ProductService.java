@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,18 +38,20 @@ public class ProductService {
         productRepo.deleteById(id);
     }
 
-    public void addProduct(Long vendorId, Product product) {
+    public void addProduct(Long vendorId, Product product, MultipartFile imageFile) throws IOException {
         System.out.println(product.getProductName());
 
         Vendor vendor = vendorRepository.findById(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found with id: " + vendorId));
         product.setVendor(vendor);
-
+        product.setImageData(imageFile.getBytes());
+        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageType(imageFile.getContentType());
         productRepo.save(product);
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return productRepo.findById(id);
+    public Product getProductById(Long id) {
+        return productRepo.findById(id).get();
     }
 
     public List<Product> getProductsByVendor(Long vendorId) {

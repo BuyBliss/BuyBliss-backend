@@ -16,17 +16,8 @@ public class ControllerLoggingAspect {
     @Autowired
     HttpServletRequest request;
 
-    @Pointcut("execution(@org.springframework.web.bind.annotation.RequestMapping * com.commerce.ECommerce.Controller.*.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.GetMapping * com.commerce.ECommerce.Controller.*.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.PutMapping * com.commerce.ECommerce.Controller.*.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.DeleteMapping * com.commerce.ECommerce.Controller.*.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.PostMapping * com.commerce.ECommerce.Controller.*.*(..))")
+    @Pointcut("execution(public * com.commerce.ecommerce.controller.*.*(..)) ")
     public void allControllerMethods() {}
-
-    @Pointcut("execution(@org.springframework.web.bind.annotation.RequestMapping * com.commerce.ECommerce.Controller.OrderController.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.GetMapping * com.commerce.ECommerce.Controller.OrderController.*(..)) " +
-            "|| execution(@org.springframework.web.bind.annotation.PostMapping * com.commerce.ECommerce.Controller.OrderController.*(..))")
-    public void orderControllerMethods() {}
 
 
     @Before("allControllerMethods()")
@@ -37,8 +28,7 @@ public class ControllerLoggingAspect {
         log.info("Received {} request for endpoint: {}. Controller method: {}", httpMethod, endpoint, methodName);
     }
 
-    @AfterReturning(pointcut = "allControllerMethods()" +
-            "|| orderControllerMethods()", returning = "response")
+    @AfterReturning(pointcut = "allControllerMethods()", returning = "response")
     public void logAfterReturning(Object response) {
         String httpMethod = request.getMethod();
         String endpoint = request.getRequestURI();
