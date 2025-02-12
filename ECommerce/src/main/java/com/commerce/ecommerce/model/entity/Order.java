@@ -28,6 +28,8 @@ public class Order {
     private double totalPrice;
     @Temporal(value = TemporalType.DATE)
     private LocalDate billDate;
+    @Lob
+    private byte[] receipt;
 
     @ManyToOne
     @JoinColumn(name = "consumer_id")

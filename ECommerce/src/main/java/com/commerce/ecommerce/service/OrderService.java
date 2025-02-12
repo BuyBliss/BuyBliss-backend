@@ -10,6 +10,7 @@ import com.commerce.ecommerce.model.request.PlaceOrderUIRequest;
 import com.commerce.ecommerce.model.dto.OrderDTO;
 import com.commerce.ecommerce.model.dto.OrderItemDTO;
 import com.commerce.ecommerce.repositoy.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class OrderService {
     ProductRepo productRepo;
 
     @Autowired
-    CartItemRepo cartItemRepo;
+    ReceiptService receiptService;
 
     @Autowired
     OrderItemRepo orderItemRepo;
@@ -42,6 +43,7 @@ public class OrderService {
     @Autowired
     CartRepository cartRepo;
 
+    @Transactional
     public OrderDTO placeOrder(PlaceOrderUIRequest placeOrderUIRequest) {
         Order order = new Order();
         order.setConsumer(consumerService.getConsumerDetails(placeOrderUIRequest.getConsumerId()));
@@ -73,7 +75,13 @@ public class OrderService {
         cartService.emptyCart(cart);
 
         savedOrder.setOrderItemList(orderItems);
+        //orderRepository.save(savedOrder);
+
+        byte[] receipt = receiptService.generateReceipt(savedOrder);
+        savedOrder.setReceipt(receipt);
         orderRepository.save(savedOrder);
+        //send receipt over mail
+
         return mapOrderToOrderDTO(savedOrder);
     }
 
@@ -134,4 +142,14 @@ public class OrderService {
         return orderDTO;
     }
 
+    public byte[] getReceiptById(Long orderId) {
+        Order order = orderRepository.getReferenceById(orderId);
+        byte[] receipt = order.getReceipt();
+        if (receipt == null) {
+            receipt = receiptService.generateReceipt(order);
+            order.setReceipt(receipt);
+            orderRepository.save(order);
+        }
+        return receipt;
+    }
 }
