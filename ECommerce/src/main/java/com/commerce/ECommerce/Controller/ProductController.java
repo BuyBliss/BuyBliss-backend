@@ -25,7 +25,7 @@ public class ProductController {
         return ResponseEntity.ok("Product Updated Successfully !");
     }
 
-    @GetMapping
+    @GetMapping("/getAllProduct")
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
             List<Product> products = productService.getAllProducts();
@@ -35,7 +35,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
             Optional<Product> product = productService.getProductById(id);

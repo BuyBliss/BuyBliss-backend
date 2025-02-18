@@ -19,6 +19,7 @@ public class Consumer {
     private String name;
     private String email;
     private String contactNo;
+    private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonManagedReference

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DemoController {
     @GetMapping("/f5StatusCheck")
-    public void test()
+    public String test()
     {
-        System.out.println("Success");
+        return "Success";
     }
 }

@@ -24,6 +24,7 @@ public class Vendor {
 	private String name;
 	private String email;
 	private String contactNo;
+	private String password;
 	@OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
 	private List<Product> products;
 }

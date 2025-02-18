@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.commerce.ECommerce.Dto.LoginDto;
 import com.commerce.ECommerce.Model.Entity.Vendor;
+import com.commerce.ECommerce.Service.JwtService;
 import com.commerce.ECommerce.Service.VendorService;
 
 @RestController
@@ -20,7 +22,25 @@ public class VendorController {
 
     @Autowired
     VendorService vendorService;
-
+    @Autowired
+    private JwtService jwtService;
+    
+    
+	@PostMapping("/login")
+	public ResponseEntity<String> vendorLogin(@RequestBody LoginDto loginDto) {
+		try {
+			if (vendorService.authenticateVendor(loginDto))
+			{
+				System.out.println(jwtService.generateToken(loginDto.getEmail()));
+				return new ResponseEntity<>("User Loign Sucessful", HttpStatus.OK);
+			}
+			else
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Inavalid UserName or Password");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+		}
+	}
+	
     @PostMapping("/add")
     public ResponseEntity<Vendor> createVendor(@RequestBody Vendor vendor) {
         Vendor createdVendor = vendorService.createVendor(vendor);
