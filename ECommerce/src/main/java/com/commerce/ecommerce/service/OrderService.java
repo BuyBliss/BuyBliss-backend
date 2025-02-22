@@ -1,15 +1,15 @@
 package com.commerce.ecommerce.service;
 
-import com.commerce.ecommerce.model.entity.Cart;
-import com.commerce.ecommerce.model.entity.Order;
-import com.commerce.ecommerce.model.entity.OrderItem;
-import com.commerce.ecommerce.model.entity.Product;
+import com.commerce.ecommerce.model.dto.OrderDTO;
+import com.commerce.ecommerce.model.dto.OrderItemDTO;
+import com.commerce.ecommerce.model.entity.*;
 import com.commerce.ecommerce.model.enums.OrderStatus;
 import com.commerce.ecommerce.model.request.BuyNowUIRequest;
 import com.commerce.ecommerce.model.request.PlaceOrderUIRequest;
-import com.commerce.ecommerce.model.dto.OrderDTO;
-import com.commerce.ecommerce.model.dto.OrderItemDTO;
-import com.commerce.ecommerce.repositoy.*;
+import com.commerce.ecommerce.repositoy.CartRepository;
+import com.commerce.ecommerce.repositoy.OrderItemRepo;
+import com.commerce.ecommerce.repositoy.OrderRepo;
+import com.commerce.ecommerce.repositoy.ProductRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +51,6 @@ public class OrderService {
     public OrderDTO placeOrder(PlaceOrderUIRequest placeOrderUIRequest) {
         Order order = new Order();
         order.setConsumer(consumerService.getConsumerDetails(placeOrderUIRequest.getConsumerId()));
-        order.setTotalPrice(placeOrderUIRequest.getTotalPrice());
         order.setDeliveryAddress(placeOrderUIRequest.getDeliveryAddress());
 
         Cart cart = cartRepo.getReferenceById(placeOrderUIRequest.getCartId());
@@ -59,27 +62,34 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        List<OrderItem> orderItems = cart.getCartItemList().stream().map(cartItem -> {
+        double totalPrice = 0;
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (CartItem cartItem : cart.getCartItemList()) {
             Product product = cartItem.getProduct();
             int quantity = cartItem.getProductQuantity();
             product.setStock(product.getStock() - quantity);
             productRepo.save(product);
 
+            totalPrice += product.getPrice() * quantity;
+
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
             orderItem.setProductQuantity(quantity);
             orderItem.setOrder(savedOrder);
-            return orderItemRepo.save(orderItem);
-        }).collect(Collectors.toList());
+            orderItems.add(orderItem);
+            orderItemRepo.save(orderItem);
+        }
 
         cartService.emptyCart(cart);
 
-        savedOrder.setOrderItemList(orderItems);
-        //orderRepository.save(savedOrder);
+        savedOrder.setTotalPrice(totalPrice);
 
-        byte[] receipt = receiptService.generateReceipt(savedOrder);
-        savedOrder.setReceipt(receipt);
+        savedOrder.setOrderItemList(orderItems);
         orderRepository.save(savedOrder);
+
+        receiptService.generateReceipt(savedOrder);
         //send receipt over mail
 
         return mapOrderToOrderDTO(savedOrder);
@@ -114,6 +124,7 @@ public class OrderService {
 
         savedOrder.setOrderItemList(orderItems);
         orderRepository.save(savedOrder);
+        receiptService.generateReceipt(savedOrder);
         return mapOrderToOrderDTO(savedOrder);
     }
 
@@ -142,14 +153,13 @@ public class OrderService {
         return orderDTO;
     }
 
-    public byte[] getReceiptById(Long orderId) {
+    public byte[] getReceiptById(Long orderId) throws ExecutionException, InterruptedException, TimeoutException {
         Order order = orderRepository.getReferenceById(orderId);
         byte[] receipt = order.getReceipt();
-        if (receipt == null) {
-            receipt = receiptService.generateReceipt(order);
-            order.setReceipt(receipt);
-            orderRepository.save(order);
+        if (receipt != null) {
+            return receipt;  // Return immediately if found
         }
-        return receipt;
+        CompletableFuture<byte[]> receiptFuture = receiptService.generateReceipt(order);
+        return receiptFuture.get(10, TimeUnit.SECONDS); // Wait for max 10s
     }
 }

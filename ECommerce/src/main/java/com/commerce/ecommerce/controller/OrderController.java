@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.commerce.ecommerce.service.OrderService;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -27,7 +30,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}/receipt")
-    public ResponseEntity<byte[]> getReceipt(@PathVariable Long orderId) {
+    public ResponseEntity<byte[]> getReceipt(@PathVariable Long orderId) throws ExecutionException, InterruptedException, TimeoutException {
         byte[] receipt = orderService.getReceiptById(orderId);
 
         HttpHeaders httpHeaders = new HttpHeaders();

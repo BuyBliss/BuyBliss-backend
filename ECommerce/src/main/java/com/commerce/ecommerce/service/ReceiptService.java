@@ -2,20 +2,29 @@ package com.commerce.ecommerce.service;
 
 import com.commerce.ecommerce.model.entity.Order;
 import com.commerce.ecommerce.model.entity.OrderItem;
+import com.commerce.ecommerce.repositoy.OrderRepo;
 import com.lowagie.text.Font;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ReceiptService {
 
-    public byte[] generateReceipt(Order order) {
+    @Autowired
+    OrderRepo orderRepo;
+
+    @Async
+    public CompletableFuture<byte[]> generateReceipt(@NotNull Order order) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document document = new Document();
         PdfWriter.getInstance(document, baos);
@@ -99,6 +108,9 @@ public class ReceiptService {
 
         document.close();
 
-        return baos.toByteArray();
+        byte[] receipt = baos.toByteArray();
+        order.setReceipt(receipt);
+        orderRepo.save(order);
+        return CompletableFuture.completedFuture(receipt);
     }
 }

@@ -1,8 +1,9 @@
 package com.commerce.ecommerce.advice;
 
-import com.commerce.ecommerce.model.response.ErrorResponse;
 import com.commerce.ecommerce.exception.OutOfStockException;
 import com.commerce.ecommerce.exception.ProductNotFoundException;
+import com.commerce.ecommerce.model.response.ErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @RestControllerAdvice
@@ -53,5 +55,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleTimeoutException(TimeoutException ex) {
+        log.error("Request failed due to Timeout: {} ", ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse("TIMEOUT", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.REQUEST_TIMEOUT);
+    }
+
+    @ExceptionHandler(InterruptedException.class)
+    public ResponseEntity<ErrorResponse> handleTimeoutException(InterruptedException ex) {
+        log.error("Thread Interrupted: {} ", ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse("INTERRUPTED", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTimeoutException(EntityNotFoundException ex) {
+        log.error("Entity not found in database: {} ", ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse("ENTITY_NOT_FOUND", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
 }
 

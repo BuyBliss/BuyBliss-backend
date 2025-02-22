@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class PlaceOrderUIRequest {
     private Long cartId;
     private Long consumerId;
-    private double totalPrice;
     private PaymentType paymentType;
     private String deliveryAddress;
 }
