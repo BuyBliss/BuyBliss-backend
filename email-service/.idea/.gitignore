@@ -1,0 +1,15 @@
+# Default ignored files
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# Ignore target directories
+target/
+email-service/target/
+
+# Ignore log files
+*.log
+logs/
+email-service/logs/
