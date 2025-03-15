@@ -10,8 +10,12 @@ import com.commerce.ecommerce.repositoy.CartRepository;
 import com.commerce.ecommerce.repositoy.OrderItemRepo;
 import com.commerce.ecommerce.repositoy.OrderRepo;
 import com.commerce.ecommerce.repositoy.ProductRepo;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrderService {
 
@@ -46,6 +51,12 @@ public class OrderService {
 
     @Autowired
     CartRepository cartRepo;
+
+    @Autowired
+    KafkaService kafkaService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional
     public OrderDTO placeOrder(PlaceOrderUIRequest placeOrderUIRequest) {
@@ -95,6 +106,7 @@ public class OrderService {
         return mapOrderToOrderDTO(savedOrder);
     }
 
+    @Transactional
     public OrderDTO buyNow(BuyNowUIRequest buyNowUIRequest) {
         Order order = new Order();
         order.setConsumer(consumerService.getConsumerDetails(buyNowUIRequest.getConsumerId()));
@@ -107,6 +119,9 @@ public class OrderService {
         orderItem.setProduct(product);
         orderItem.setProductQuantity(1);
 
+        // 🔥 Ensure OrderItem is linked to Order BEFORE saving
+        orderItem.setOrder(order);
+        order.getOrderItemList().add(orderItem);
 
         order.setTotalPrice(product.getPrice());
         order.setQuantity(1);
@@ -116,16 +131,17 @@ public class OrderService {
         order.setBillDate(LocalDate.now());
 
         Order savedOrder = orderRepository.save(order);
-        orderItem.setOrder(savedOrder);
-        orderItemRepo.save(orderItem);
 
-        List<OrderItem> orderItems = new ArrayList<>();
-        orderItems.add(orderItem);
+        postOrder(savedOrder.getOrderId());
 
-        savedOrder.setOrderItemList(orderItems);
-        orderRepository.save(savedOrder);
-        receiptService.generateReceipt(savedOrder);
         return mapOrderToOrderDTO(savedOrder);
+    }
+
+    @Async                                  //working synchronously
+    private void postOrder(Long orderId) {
+        Order order = orderRepository.getReferenceById(orderId);
+        kafkaService.sendEmail(order);
+        receiptService.generateReceipt(order);
     }
 
     private OrderDTO mapOrderToOrderDTO(Order savedOrder) {

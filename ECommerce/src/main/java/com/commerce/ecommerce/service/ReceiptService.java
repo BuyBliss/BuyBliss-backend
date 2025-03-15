@@ -10,7 +10,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -23,7 +22,6 @@ public class ReceiptService {
     @Autowired
     OrderRepo orderRepo;
 
-    @Async
     public CompletableFuture<byte[]> generateReceipt(@NotNull Order order) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document document = new Document();

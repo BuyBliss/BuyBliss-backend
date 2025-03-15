@@ -2,15 +2,15 @@ package com.commerce.ecommerce.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "consumer")  // Prevent recursion
+@ToString(exclude = "consumer")  // Prevent infinite loop
 @Entity
 public class Cart {
     @Id

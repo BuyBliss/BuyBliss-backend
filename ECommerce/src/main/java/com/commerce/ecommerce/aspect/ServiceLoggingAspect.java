@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ServiceLoggingAspect {
 
-    @Pointcut("execution(public * com.commerce.ecommerce.service.*.*(..))")
+    //@Pointcut("execution(public * com.commerce.ecommerce.service.*.*(..))")       //(method level pointcut)
+    @Pointcut("within(com.commerce.ecommerce.service..*)")      //(simple class level pointcut)
     public void allServiceMethods() {}
 
     @Before("allServiceMethods()")
