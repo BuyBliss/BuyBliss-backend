@@ -1,12 +1,16 @@
 package com.commerce.ecommerce.service;
 
+import com.commerce.ecommerce.feignClient.EmailFeign;
 import com.commerce.ecommerce.model.dto.EmailDTO;
 import com.commerce.ecommerce.model.entity.Order;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class KafkaService {
 
     @Autowired
@@ -14,6 +18,9 @@ public class KafkaService {
 
     @Autowired
     private KafkaTemplate<String, EmailDTO> emailKafkaTemplate;
+
+    @Autowired
+    EmailFeign emailFeign;
 
 
     public boolean sendMessage(String message) {
@@ -36,6 +43,18 @@ public class KafkaService {
                         Buy Bliss :) ..here money can buy happiness!""")
                 .build();
 
-        emailKafkaTemplate.send("email-topic", emailDTO);
+        try {
+            emailKafkaTemplate.send("email-topic", emailDTO);
+            log.info("Successfully sent using kafka");                                  ///bug here in scenario: if kafka goes down in between, here not throwing an exception
+        } catch(Exception kafkaEx) {
+            try {
+                log.error("Failed to publish on kafka email-topic, sending email via feign client! Error: ", kafkaEx);
+                emailFeign.sendEmail(emailDTO);
+                log.info("Successfully sent using feign");
+            }
+            catch (FeignException e) {
+                log.error("Email Service Feign failed ", e);
+            }
+        }
     }
 }

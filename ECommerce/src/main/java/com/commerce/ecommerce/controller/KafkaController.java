@@ -16,7 +16,7 @@ public class KafkaController {
     @Autowired
     KafkaService kafkaService;
 
-    @PostMapping("/send")
+    @PostMapping("/send")       //won't work as using JsonSerializer
     public ResponseEntity<String> sendMessage(@RequestBody String message) {
         return ResponseEntity.ok(kafkaService.sendMessage(message) + "   " + message + ": sent successfully!");
     }

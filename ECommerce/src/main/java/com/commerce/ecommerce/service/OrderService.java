@@ -12,8 +12,6 @@ import com.commerce.ecommerce.repositoy.OrderRepo;
 import com.commerce.ecommerce.repositoy.ProductRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class OrderService {
 
@@ -71,11 +68,7 @@ public class OrderService {
         order.setStatus(OrderStatus.CONFIRMED);
         order.setBillDate(LocalDate.now());
 
-        Order savedOrder = orderRepository.save(order);
-
         double totalPrice = 0;
-
-        List<OrderItem> orderItems = new ArrayList<>();
 
         for (CartItem cartItem : cart.getCartItemList()) {
             Product product = cartItem.getProduct();
@@ -88,20 +81,18 @@ public class OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
             orderItem.setProductQuantity(quantity);
-            orderItem.setOrder(savedOrder);
-            orderItems.add(orderItem);
-            orderItemRepo.save(orderItem);
+            // Ensure OrderItem is linked to Order BEFORE saving
+            orderItem.setOrder(order);
+            order.getOrderItemList().add(orderItem);
         }
 
         cartService.emptyCart(cart);
 
-        savedOrder.setTotalPrice(totalPrice);
+        order.setTotalPrice(totalPrice);
 
-        savedOrder.setOrderItemList(orderItems);
-        orderRepository.save(savedOrder);
+        Order savedOrder = orderRepository.save(order);
 
-        receiptService.generateReceipt(savedOrder);
-        //send receipt over mail
+        postOrder(savedOrder.getOrderId());
 
         return mapOrderToOrderDTO(savedOrder);
     }
@@ -119,7 +110,7 @@ public class OrderService {
         orderItem.setProduct(product);
         orderItem.setProductQuantity(1);
 
-        // 🔥 Ensure OrderItem is linked to Order BEFORE saving
+        // Ensure OrderItem is linked to Order BEFORE saving
         orderItem.setOrder(order);
         order.getOrderItemList().add(orderItem);
 
