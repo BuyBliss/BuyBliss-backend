@@ -6,6 +6,7 @@ import com.commerce.ecommerce.model.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.commerce.ecommerce.service.OrderService;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/order")
+@Tag(name = "Order Management", description = "Operations related to orders")
 public class OrderController {
 
     @Autowired

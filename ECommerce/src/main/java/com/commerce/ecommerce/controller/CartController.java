@@ -2,12 +2,14 @@ package com.commerce.ecommerce.controller;
 
 import com.commerce.ecommerce.model.request.UpdateCartUIRequest;
 import com.commerce.ecommerce.service.CartService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cart")
+@Tag(name = "Shopping Cart", description = "Operations related to shopping cart")
 public class CartController {
 
     @Autowired

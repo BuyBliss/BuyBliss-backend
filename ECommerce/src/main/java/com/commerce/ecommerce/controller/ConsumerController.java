@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 
 @RestController
 @RequestMapping("/consumer")
+@Tag(name = "Consumer Management", description = "Operations related to consumers")
 public class ConsumerController {
 
     @Autowired
@@ -41,6 +44,7 @@ public class ConsumerController {
     }
 
     @GetMapping("/{id}/myCart")
+    @Operation(summary = "Get cart items", description = "Fetches all items in the user's cart")
     public ResponseEntity<Cart> getMyCart(@PathVariable Long id){
         return ResponseEntity.ok(consumerService.getMyCart(id));
     }

@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.commerce.ecommerce.service.VendorService;
 
 @RestController
 @RequestMapping("/vendor")
+@Tag(name = "Vendor Management", description = "Operations related to vendors")
 public class VendorController {
 
     @Autowired
@@ -30,20 +32,14 @@ public class VendorController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateVendor(
-            @PathVariable Long id,
-            @Valid @RequestBody VendorDTO updateVendor) {
+    public ResponseEntity<String> updateVendor(@PathVariable Long id, @Valid @RequestBody VendorDTO updateVendor) {
         vendorService.updateVendor(id, updateVendor);
         return ResponseEntity.ok("Vendor details updated successfully!");
     }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteVendor(@PathVariable Long id) {
-        try {
-            vendorService.deleteVendor(id);
-            return ResponseEntity.ok("Vendor deleted ");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        vendorService.deleteVendor(id);
+        return ResponseEntity.ok("Vendor deleted ");
     }
 }

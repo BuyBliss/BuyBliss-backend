@@ -12,17 +12,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/product")
+@Tag(name = "Inventory Management", description = "Manages products in the e-commerce system")
 public class ProductController {
 
     @Autowired
     ProductService productService;
 
     @PostMapping("/add")
+    @Operation(summary = "Add a product", description = "Adds a new product to the catalog")
     public ResponseEntity<String> addProduct(@RequestParam Long vendorId, @RequestPart String product, @RequestPart MultipartFile imageFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Product productObj = objectMapper.readValue(product, Product.class);
@@ -39,6 +44,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all products", description = "Fetches a list of available products in pages")
     public ResponseEntity<ProductSearchResponse> getAllProducts(@RequestParam(required = false) String category,
                                                            @RequestParam(defaultValue = "1", required = false) int pageNumber,
                                                            @RequestParam(defaultValue = "10", required = false) int pageSize) {
