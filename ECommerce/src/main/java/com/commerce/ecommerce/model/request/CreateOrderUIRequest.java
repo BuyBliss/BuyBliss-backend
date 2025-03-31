@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuyNowUIRequest {
+public class CreateOrderUIRequest {
     private Long productId;
     private Long consumerId;
     private String deliveryAddress;
     private PaymentType paymentType;
+    private boolean cartOrder;
 }

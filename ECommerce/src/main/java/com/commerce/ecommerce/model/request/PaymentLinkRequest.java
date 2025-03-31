@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaceOrderUIRequest {
-    private Long consumerId;
+public class PaymentLinkRequest {
+    private Long orderId;
     private PaymentType paymentType;
-    private String deliveryAddress;
+    private double amount;
 }

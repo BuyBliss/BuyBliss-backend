@@ -1,15 +1,19 @@
 package com.commerce.ecommerce.service;
 
+import com.commerce.ecommerce.exception.OutOfStockException;
 import com.commerce.ecommerce.model.dto.ProductDTO;
 import com.commerce.ecommerce.model.dto.VendorDTO;
+import com.commerce.ecommerce.model.entity.OrderItem;
 import com.commerce.ecommerce.model.entity.Product;
 import com.commerce.ecommerce.model.entity.Vendor;
 import com.commerce.ecommerce.model.response.ProductSearchResponse;
 import com.commerce.ecommerce.repositoy.ProductRepo;
 import com.commerce.ecommerce.repositoy.VendorRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -119,5 +123,34 @@ public class ProductService {
         }).toList();
 
         return new ProductSearchResponse(products.getTotalPages(), productDTOS);
+    }
+
+    @Transactional
+    public Product holdStock(Long productId, int quantity) {
+        Product product = productRepo.findByProductIdWithLock(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (product.getStock() < quantity) {
+            throw new OutOfStockException("Not enough stock available");
+        }
+
+        product.setStock(product.getStock() - quantity);
+        return productRepo.save(product);
+    }
+
+    @Async
+    public void releaseInventory(List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            releaseStock(orderItem.getProduct().getProductId(), orderItem.getProductQuantity());
+        }
+    }
+
+    @Transactional
+    private void releaseStock(Long productId, int productQuantity) {
+        Product product = productRepo.findByProductIdWithLock(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setStock(product.getStock() + productQuantity);
+        productRepo.save(product);
     }
 }

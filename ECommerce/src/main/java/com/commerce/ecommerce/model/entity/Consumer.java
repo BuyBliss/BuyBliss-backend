@@ -9,8 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "cart")  // 🔥 Prevent recursion
-@ToString(exclude = "cart")  // 🔥 Prevent infinite loop
+@EqualsAndHashCode(exclude = "cart")  // Prevent recursion
+@ToString(exclude = "cart")  // Prevent infinite loop
 @Entity
 public class Consumer {
     @Id

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +28,11 @@ public class Order {
     private String deliveryAddress;
     private int quantity;
     private double totalPrice;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime orderCreated;
     @Temporal(value = TemporalType.DATE)
     private LocalDate billDate;
+    private boolean isCartOrder;
     @Lob
     private byte[] receipt;
 

@@ -1,8 +1,11 @@
 package com.commerce.ecommerce.controller;
 
-import com.commerce.ecommerce.model.request.BuyNowUIRequest;
+import com.commerce.ecommerce.model.enums.OrderStatus;
+import com.commerce.ecommerce.model.request.CreateOrderUIRequest;
 import com.commerce.ecommerce.model.request.PlaceOrderUIRequest;
 import com.commerce.ecommerce.model.dto.OrderDTO;
+import com.commerce.ecommerce.model.request.UpdateOrderStatus;
+import com.commerce.ecommerce.model.response.CreatedOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +30,8 @@ public class OrderController {
     }
 
     @PostMapping("/buyNow")
-    public OrderDTO buyNow(@RequestBody BuyNowUIRequest buyNowUIRequest) {
-        return orderService.buyNow(buyNowUIRequest);
+    public OrderDTO buyNow(@RequestBody CreateOrderUIRequest createOrderUIRequest) {
+        return orderService.buyNow(createOrderUIRequest);
     }
 
     @GetMapping("/{orderId}/receipt")
@@ -40,5 +43,20 @@ public class OrderController {
         httpHeaders.setContentDisposition(ContentDisposition.inline().filename("Receipt_" + orderId + ".pdf").build());
 
         return new ResponseEntity<>(receipt, httpHeaders, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public CreatedOrder createOrder(CreateOrderUIRequest createOrderUIRequest) {
+        return orderService.initOrder(createOrderUIRequest);
+    }
+
+    @PutMapping("/update")
+    public void updateOrderStatus(@RequestBody UpdateOrderStatus updateOrderStatus) {
+        orderService.finalizeOrder(updateOrderStatus);
+    }
+
+    @GetMapping("/{id}/status")
+    public ResponseEntity<OrderStatus> getOrderStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getStatusForOrderId(id));
     }
 }
